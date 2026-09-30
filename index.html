@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Santri - Arrasmu Ilmiyyah Channel</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Amiri (Arabic) -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#FF9900',
+                            goldHover: '#E68A00',
+                            goldLight: '#FFB84D',
+                            dark: '#0D0D0D',
+                            card: '#1A1A1A',
+                            border: '#2A2A2A',
+                            input: '#242424'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        arabic: ['Amiri', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0D0D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A2A2A;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FF9900;
+        }
+    </style>
+</head>
+<body class="bg-[#0D0D0D] text-gray-100 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- HEADER -->
+    <header class="bg-[#141414] border-b border-[#262626] sticky top-0 z-30 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Brand & Logo -->
+            <div class="flex items-center space-x-4">
+                <div class="relative group cursor-pointer" onclick="triggerLogoUpload()" title="Klik untuk mengunggah logo manual">
+                    <div id="logoContainer" class="w-14 h-14 bg-gradient-to-br from-[#1A1A1A] to-[#000] border border-[#FF9900]/40 rounded-xl shadow-inner flex items-center justify-center overflow-hidden transition group-hover:border-[#FF9900]">
+                        <img id="headerLogoImg" class="w-full h-full object-cover hidden" alt="Logo Channel">
+                        <div id="defaultLogoSvg" class="flex items-center justify-center w-full h-full">
+                            <svg class="w-11 h-11" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="40" fill="#FF9900" fill-opacity="0.05" />
+                                <text x="50" y="48" font-family="'Inter', sans-serif" font-weight="900" font-size="25" fill="url(#goldGradient)" text-anchor="middle" letter-spacing="1">ARSM</text>
+                                <path d="M 22 58 Q 50 72 78 58 Q 60 62 50 63 Q 35 62 22 58 Z" fill="url(#goldGradient)" />
+                                <circle cx="50" cy="22" r="2.5" fill="#FF9900" />
+                                <defs>
+                                    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#FFC107" />
+                                        <stop offset="50%" stop-color="#FF9900" />
+                                        <stop offset="100%" stop-color="#E68A00" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="logoUploadBadge" class="absolute -bottom-1 -right-1 bg-[#FF9900] text-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow group-hover:scale-110 transition" title="Ganti Logo">
+                        <i class="fa-solid fa-camera"></i>
+                    </div>
+                </div>
+
+                <input type="file" id="logoFileInput" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+
+                <div>
+                    <h1 class="text-xl font-bold tracking-wide text-white flex items-center gap-2">
+                        Arrasmu Ilmiyyah Channel
+                        <span class="text-xs font-normal px-2 py-0.5 rounded bg-[#FF9900]/10 text-[#FF9900] border border-[#FF9900]/20">Official</span>
+                    </h1>
+                    <p class="text-xs text-gray-400 flex items-center gap-1.5 mt-0.5">
+                        <i class="fa-regular fa-clock text-[#FF9900]"></i>
+                        <span id="greetingText">Mode Santri / Lihat Data</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Toolbar & Tab Navigation -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
+                <!-- Navigation Tabs -->
+                <div class="bg-[#242424] p-1 rounded-xl border border-[#333] flex items-center gap-1 text-xs font-semibold">
+                    <button id="tabDashboard" onclick="switchTab('dashboard')" class="px-3 py-1.5 rounded-lg bg-[#FF9900] text-black transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-chart-line"></i> Dashboard Santri
+                    </button>
+                    <button id="tabCBT" onclick="switchTab('cbt')" class="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-laptop-code text-amber-400"></i> Soal Ujian Online (CBT)
+                    </button>
+                </div>
+
+                <!-- Mode Switcher -->
+                <div class="bg-[#242424] p-1 rounded-xl border border-[#333] flex items-center gap-1 text-xs font-semibold">
+                    <button id="btnModeUstadz" onclick="requestUstadzMode()" class="px-3 py-1.5 rounded-lg text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-lock" id="iconLockState"></i> Mode Ustadz
+                    </button>
+                    <button id="btnModeSantri" onclick="switchMode('santri')" class="px-3 py-1.5 rounded-lg bg-[#333] text-gray-200 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-eye"></i> Mode Santri
+                    </button>
+                </div>
+
+                <!-- Admin Action Group -->
+                <div id="adminActionGroup" class="hidden items-center gap-2">
+                    <button onclick="openChangePinModal()" class="px-2.5 py-2.5 bg-[#262626] hover:bg-[#333] text-gray-300 border border-[#333] font-semibold rounded-lg transition duration-200 flex items-center gap-1.5 text-xs" title="Ubah PIN Ustadz">
+                        <i class="fa-solid fa-key text-[#FF9900]"></i>
+                        <span class="hidden sm:inline">PIN</span>
+                    </button>
+                    <button onclick="openUstadzModal()" class="px-3 py-2.5 bg-[#262626] hover:bg-[#333] text-amber-400 border border-[#FF9900]/30 font-semibold rounded-lg transition duration-200 flex items-center gap-2 text-xs">
+                        <i class="fa-solid fa-user-tie"></i>
+                        <span>+ Ustadz</span>
+                    </button>
+                    <button onclick="openSantriModal()" class="px-4 py-2.5 bg-gradient-to-r from-[#FF9900] to-[#E68A00] hover:from-[#E68A00] hover:to-[#C77700] text-black font-semibold rounded-lg shadow-lg hover:shadow-[#FF9900]/20 transition duration-200 flex items-center justify-center gap-2 text-xs">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>+ Santri</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- BANNER MODE SANTRI -->
+        <div id="santriModeBanner" class="bg-blue-950/40 border border-blue-500/30 rounded-xl p-3.5 text-blue-300 text-xs flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <i class="fa-solid fa-circle-info text-base text-blue-400"></i>
+                <span><strong>Mode Santri (Tampilan Publik):</strong> Anda dapat melihat data santri, mengerjakan ikhtibar/soal ujian online, dan melihat profil Ustadz. Untuk mengedit/menambah data dan membuat paket soal ujian baru, masuk ke Mode Ustadz.</span>
+            </div>
+            <button onclick="requestUstadzMode()" class="underline hover:text-white font-semibold whitespace-nowrap flex items-center gap-1">
+                <i class="fa-solid fa-lock text-xs"></i> Masuk Mode Ustadz
+            </button>
+        </div>
+
+        <!-- VIEW 1: DASHBOARD UTAMA -->
+        <div id="viewDashboard" class="space-y-6">
+            <!-- SECTION PROFIL USTADZ -->
+            <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-5 space-y-4">
+                <div class="flex items-center justify-between border-b border-[#262626] pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-[#FF9900]/10 text-[#FF9900] flex items-center justify-center">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <h2 class="text-base font-bold text-white">Profil Ustadz & Pengajar Arrasmu Ilmiyyah</h2>
+                    </div>
+                    <span class="text-xs text-gray-400">Sanad & Sertifikasi Pengajar</span>
+                </div>
+                
+                <div id="ustadzContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- JS Injected Cards -->
+                </div>
+            </div>
+
+            <!-- STATS CARDS -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/20 flex items-center justify-center text-[#FF9900]">
+                        <i class="fa-solid fa-users text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">Total Santri</p>
+                        <h3 id="statTotalSantri" class="text-2xl font-bold text-white">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-award text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">Predikat Mumtaz</p>
+                        <h3 id="statMumtaz" class="text-2xl font-bold text-white">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                        <i class="fa-solid fa-file-pen text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">Total Ikhtibar</p>
+                        <h3 id="statTotalUjian" class="text-2xl font-bold text-white">0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-4 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                        <i class="fa-solid fa-book-bookmark text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">Rata-rata Nilai</p>
+                        <h3 id="statRataRata" class="text-2xl font-bold text-white">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH & FILTER -->
+            <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-4">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full md:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" id="searchInput" oninput="renderSantriList()" placeholder="Cari santri, kitab, atau pelajaran..." 
+                            class="w-full bg-[#242424] text-white placeholder-gray-500 text-sm rounded-lg pl-10 pr-4 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none transition">
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <select id="filterPelajaran" onchange="renderSantriList()" class="bg-[#242424] text-gray-200 text-sm rounded-lg px-3 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            <option value="ALL">Semua Pelajaran</option>
+                            <option value="Tajwid">Tajwid</option>
+                            <option value="Nahwu">Nahwu</option>
+                            <option value="Shorof">Shorof</option>
+                            <option value="Tahfidz">Tahfidz</option>
+                            <option value="Qira'at">Qira'at</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+
+                        <select id="filterPredikat" onchange="renderSantriList()" class="bg-[#242424] text-gray-200 text-sm rounded-lg px-3 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            <option value="ALL">Semua Predikat</option>
+                            <option value="Mumtaz">Mumtaz (90-100)</option>
+                            <option value="Jayyid Jiddan">Jayyid Jiddan (80-89)</option>
+                            <option value="Jayyid">Jayyid (70-79)</option>
+                            <option value="Maqbul">Maqbul (60-69)</option>
+                            <option value="Muroja'ah">Muroja'ah (&lt;60)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SANTRI GRID -->
+            <div id="santriContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamic JS Cards -->
+            </div>
+
+            <!-- EMPTY STATE -->
+            <div id="emptyState" class="hidden bg-[#1A1A1A] border border-[#262626] rounded-xl p-12 text-center">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#242424] flex items-center justify-center text-gray-500">
+                    <i class="fa-solid fa-folder-open text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-white mb-1">Data Santri Tidak Ditemukan</h3>
+                <p class="text-sm text-gray-400 mb-6 max-w-md mx-auto">Belum ada data santri yang tersimpan atau hasil pencarian tidak cocok dengan kriteria filter.</p>
+                <button id="emptyStateAddBtn" onclick="requestUstadzMode()" class="px-4 py-2 bg-[#FF9900] text-black font-semibold text-sm rounded-lg hover:bg-[#E68A00] transition">
+                    <i class="fa-solid fa-plus mr-1"></i> Tambah Santri Baru
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 2: MODUL SOAL UJIAN ONLINE (CBT) -->
+        <div id="viewCBT" class="hidden space-y-6">
+            <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#262626] pb-4 mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-laptop-code text-[#FF9900]"></i>
+                            Portal Ikhtibar & Soal Ujian Online (CBT)
+                        </h2>
+                        <p class="text-xs text-gray-400 mt-1">
+                            Pilih paket soal di bawah ini untuk memulai ikhtibar online. Nilai hasil ujian akan otomatis tersimpan dalam rekapitulasi santri.
+                        </p>
+                    </div>
+
+                    <!-- Tombol Tambah Soal (Khusus Mode Ustadz) -->
+                    <div id="adminCbtActions" class="hidden">
+                        <button onclick="openCreateQuizModal()" class="px-4 py-2 bg-[#FF9900] hover:bg-[#E68A00] text-black font-bold text-xs rounded-lg transition flex items-center gap-2">
+                            <i class="fa-solid fa-plus"></i> Buat Paket Soal Baru
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DAFTAR PAKET SOAL TERSEDIA -->
+                <div id="quizListSection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- JS Injected Quiz Cards -->
+                </div>
+
+                <!-- AREA PENGERJAAN SOAL (RUNNER) -->
+                <div id="quizRunnerSection" class="hidden bg-[#141414] border border-[#2A2A2A] rounded-xl p-6 max-w-3xl mx-auto space-y-6">
+                    <div class="flex items-center justify-between border-b border-[#262626] pb-4">
+                        <div>
+                            <span id="runnerQuizCategory" class="px-2.5 py-0.5 rounded bg-[#FF9900]/10 text-[#FF9900] border border-[#FF9900]/20 text-xs font-semibold">Tajwid</span>
+                            <h3 id="runnerQuizTitle" class="text-lg font-bold text-white mt-1">Ujian Tajwid Matan Al-Jazariyyah</h3>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 block">Sisa Waktu:</span>
+                            <span id="quizTimerText" class="text-lg font-mono font-bold text-amber-400">15:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Pilih Nama Santri Yang Mengerjakan -->
+                    <div class="bg-[#1E1E1E] p-4 rounded-xl border border-[#333]">
+                        <label class="block text-xs font-medium text-gray-300 mb-1.5"><i class="fa-solid fa-user-graduate text-[#FF9900] mr-1"></i> Pilih Nama Santri Peserta Ujian *</label>
+                        <select id="runnerSantriSelect" class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            <option value="">-- Pilih Santri --</option>
+                        </select>
+                    </div>
+
+                    <!-- Containers Soal -->
+                    <div id="quizQuestionsContainer" class="space-y-6">
+                        <!-- JS Injected Questions -->
+                    </div>
+
+                    <div class="pt-4 border-t border-[#262626] flex items-center justify-end">
+                        <button onclick="submitQuizAnswers()" class="px-6 py-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-black font-bold text-sm rounded-lg transition shadow-lg">
+                            Kirim & Selesaikan Ujian <i class="fa-solid fa-paper-plane ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- HASIL SKOR UJIAN -->
+                <div id="quizResultSection" class="hidden bg-[#141414] border border-[#2A2A2A] rounded-xl p-8 max-w-xl mx-auto text-center space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Ujian Selesai!</h3>
+                    <p id="resultSantriInfo" class="text-sm text-gray-300">Santri: <strong>Muhammad Ali</strong></p>
+
+                    <div class="bg-[#1E1E1E] border border-[#333] rounded-xl p-6 my-4">
+                        <span class="text-xs text-gray-400 uppercase tracking-wider font-bold block mb-1">Skor Akhir Ujian</span>
+                        <div id="resultScoreText" class="text-5xl font-black text-[#FF9900]">100</div>
+                        <div id="resultPredikatText" class="text-sm font-bold text-emerald-400 mt-2">Mumtaz (ممتاز)</div>
+                    </div>
+
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Nilai dan rekam ikhtibar ujian online telah otomatis dimasukkan ke dalam riwayat evaluasi santri.
+                    </p>
+
+                    <button onclick="finishQuizResult()" class="px-6 py-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-black font-bold text-xs rounded-lg transition">
+                        Kembali ke Daftar Soal
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL BUAT PAKET SOAL UJIAN BARU (USTADZ MODE) -->
+    <div id="createQuizModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#1A1A1A] border border-[#333] rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl my-8">
+            <div class="bg-[#242424] px-6 py-4 border-b border-[#333] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/30 flex items-center justify-center text-[#FF9900]">
+                        <i class="fa-solid fa-file-circle-plus"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Buat Paket Soal Ujian Online Baru</h3>
+                </div>
+                <button onclick="closeCreateQuizModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#333] transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleCreateQuizSubmit(event)" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Judul Paket Ujian *</label>
+                        <input type="text" id="inputQuizTitle" required placeholder="Contoh: Ikhtibar Tajwid - Bab Makharijul Huruf"
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Kategori Pelajaran *</label>
+                        <input type="text" id="inputQuizCategory" required placeholder="Tajwid / Nahwu / Shorof"
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Penguji / Pembuat Soal *</label>
+                        <input type="text" id="inputQuizAuthor" required placeholder="Bapak Adi Kalingga"
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Durasi Ujian (Menit) *</label>
+                        <input type="number" id="inputQuizDuration" required min="1" max="180" value="15"
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- SOAL MULTIPLE CHOICE INPUT -->
+                <div class="border-t border-[#262626] pt-4 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-bold text-[#FF9900] uppercase tracking-wider">Daftar Pertanyaan Pilihan Ganda</h4>
+                        <button type="button" onclick="addQuestionInputRow()" class="text-xs bg-[#242424] hover:bg-[#333] text-amber-400 px-3 py-1.5 rounded border border-[#333]">
+                            + Tambah Pertanyaan
+                        </button>
+                    </div>
+
+                    <div id="questionsInputContainer" class="space-y-4 max-h-[50vh] overflow-y-auto pr-1">
+                        <!-- JS Injected Rows -->
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#262626]">
+                    <button type="button" onclick="closeCreateQuizModal()" class="px-4 py-2.5 bg-[#262626] hover:bg-[#333] text-gray-300 text-sm font-medium rounded-lg transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-black font-semibold text-sm rounded-lg shadow-lg transition">
+                        Simpan Paket Soal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL LOGIN PIN USTADZ -->
+    <div id="loginModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#1A1A1A] border border-[#333] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="bg-[#242424] px-6 py-4 border-b border-[#333] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/30 flex items-center justify-center text-[#FF9900]">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Verifikasi Mode Ustadz</h3>
+                </div>
+                <button onclick="closeLoginModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#333] transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleLoginSubmit(event)" class="p-6 space-y-4">
+                <p class="text-xs text-gray-300 leading-relaxed">
+                    Masukkan PIN Keamanan untuk mengakses hak akses kelola data, menambah/mengedit ustadz, santri, dan paket soal.
+                </p>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1.5">PIN Keamanan *</label>
+                    <div class="relative">
+                        <input type="password" id="inputLoginPin" required placeholder="Masukkan PIN..." autofocus
+                            class="w-full bg-[#242424] text-white text-center text-lg tracking-widest rounded-lg px-3.5 py-3 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        <button type="button" onclick="togglePinVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-sm">
+                            <i id="eyePinIcon" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <p id="loginErrorMessage" class="text-xs text-rose-400 mt-2 hidden flex items-center gap-1">
+                        <i class="fa-solid fa-circle-exclamation"></i> PIN salah! Silakan coba lagi.
+                    </p>
+                </div>
+
+                <div class="bg-[#222] p-3 rounded-lg border border-[#2D2D2D] text-[11px] text-gray-400">
+                    <i class="fa-solid fa-lightbulb text-[#FF9900] mr-1"></i>
+                    <strong>PIN Default:</strong> <span class="text-amber-400 font-mono font-bold">1234</span>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#262626]">
+                    <button type="button" onclick="closeLoginModal()" class="px-4 py-2.5 bg-[#262626] hover:bg-[#333] text-gray-300 text-sm font-medium rounded-lg transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-black font-semibold text-sm rounded-lg shadow-lg transition">
+                        Masuk Ustadz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL UBAH PIN -->
+    <div id="changePinModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#1A1A1A] border border-[#333] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="bg-[#242424] px-6 py-4 border-b border-[#333] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/30 flex items-center justify-center text-[#FF9900]">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Ubah PIN Keamanan</h3>
+                </div>
+                <button onclick="closeChangePinModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#333] transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleChangePinSubmit(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">PIN Lama *</label>
+                    <input type="password" id="inputOldPin" required placeholder="Masukkan PIN saat ini"
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">PIN Baru *</label>
+                    <input type="password" id="inputNewPin" required placeholder="Masukkan PIN baru"
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Konfirmasi PIN Baru *</label>
+                    <input type="password" id="inputConfirmNewPin" required placeholder="Ulangi PIN baru"
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                </div>
+
+                <p id="changePinErrorMessage" class="text-xs text-rose-400 hidden flex items-center gap-1">
+                    <i class="fa-solid fa-circle-exclamation"></i> <span id="changePinErrorText"></span>
+                </p>
+
+                <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#262626]">
+                    <button type="button" onclick="closeChangePinModal()" class="px-4 py-2.5 bg-[#262626] hover:bg-[#333] text-gray-300 text-sm font-medium rounded-lg transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-black font-semibold text-sm rounded-lg shadow-lg transition">
+                        Simpan PIN Baru
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL SANTRI -->
+    <div id="santriModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#1A1A1A] border border-[#333] rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl my-8">
+            <div class="bg-[#242424] px-6 py-4 border-b border-[#333] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/30 flex items-center justify-center text-[#FF9900]">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <h3 id="modalTitle" class="text-lg font-bold text-white">Tambah Data Santri</h3>
+                </div>
+                <button onclick="closeSantriModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#333] transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="santriForm" onsubmit="handleSantriSubmit(event)" class="p-6 space-y-6">
+                <input type="hidden" id="santriId">
+
+                <!-- SECTION A: IDENTITAS -->
+                <div>
+                    <h4 class="text-xs font-bold text-[#FF9900] uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-id-card"></i> A. Identitas Santri
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Nama Lengkap *</label>
+                            <input type="text" id="inputNama" required placeholder="Contoh: Muhammad Ali Hasan"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Umur (Tahun) *</label>
+                            <input type="number" id="inputUmur" required min="5" max="80" placeholder="15"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Domisili / Kota *</label>
+                            <input type="text" id="inputDomisili" required placeholder="Contoh: Yogyakarta / Surabaya"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION B: CAPAIAN -->
+                <div class="pt-2 border-t border-[#262626]">
+                    <h4 class="text-xs font-bold text-[#FF9900] uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open"></i> B. Progress Pembelajaran Kitab
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Pelajaran *</label>
+                            <input type="text" id="inputPelajaran" required placeholder="Contoh: Tajwid / Nahwu / Shorof"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Nama Kitab *</label>
+                            <input type="text" id="inputKitab" required placeholder="Contoh: Matan Al-Jazariyyah"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Bab *</label>
+                            <input type="text" id="inputBab" required placeholder="Contoh: Bab Makharijul Huruf"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Halaman / Ayat / Capaian *</label>
+                            <input type="text" id="inputHalaman" required placeholder="Contoh: Hal. 12-15 / Bait 1-20"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION C: EVALUASI -->
+                <div class="pt-2 border-t border-[#262626]">
+                    <h4 class="text-xs font-bold text-[#FF9900] uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-award"></i> C. Evaluasi Harian & Nilai
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Nilai Angka (0-100) *</label>
+                            <input type="number" id="inputNilai" required min="0" max="100" placeholder="85" oninput="calculatePredikat()"
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none font-bold">
+                        </div>
+                        <div class="md:col-span-2 bg-[#242424] p-3 rounded-lg border border-[#333] flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-400 block">Predikat Otomatis:</span>
+                                <span id="previewPredikatText" class="text-sm font-bold text-[#FF9900]">Masukkan nilai...</span>
+                            </div>
+                            <span id="previewPredikatArabic" class="text-xl font-arabic font-bold text-amber-400"></span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Catatan Evaluasi Ustadz</label>
+                        <textarea id="inputCatatan" rows="3" placeholder="Contoh: Bacaan sudah fasih, perhatikan makhraj huruf 'Ain dan Ghunnah."
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#262626]">
+                    <button type="button" onclick="closeSantriModal()" class="px-4 py-2.5 bg-[#262626] hover:bg-[#333] text-gray-300 text-sm font-medium rounded-lg transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-black font-semibold text-sm rounded-lg shadow-lg transition">
+                        Simpan Santri
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL USTADZ -->
+    <div id="ustadzModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#1A1A1A] border border-[#333] rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl my-8">
+            <div class="bg-[#242424] px-6 py-4 border-b border-[#333] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/30 flex items-center justify-center text-[#FF9900]">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3 id="ustadzModalTitle" class="text-lg font-bold text-white">Tambah Profil Ustadz</h3>
+                </div>
+                <button onclick="closeUstadzModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#333] transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="ustadzForm" onsubmit="handleUstadzSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="ustadzId">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Nama Lengkap & Gelar *</label>
+                        <input type="text" id="inputNamaUstadz" required placeholder="Contoh: Bapak Adi Kalingga"
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Umur (Tahun) *</label>
+                        <input type="number" id="inputUmurUstadz" required min="18" max="90" placeholder="41"
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Domisili *</label>
+                    <input type="text" id="inputDomisiliUstadz" required placeholder="Contoh: Yogyakarta"
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Sertifikasi & Sanad Keilmuan *</label>
+                    <textarea id="inputSertifikasiUstadz" rows="5" required placeholder="Mudir Arrasmu Ilmiyyah Channel..."
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none leading-relaxed"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#262626]">
+                    <button type="button" onclick="closeUstadzModal()" class="px-4 py-2.5 bg-[#262626] hover:bg-[#333] text-gray-300 text-sm font-medium rounded-lg transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-[#FF9900] hover:bg-[#E68A00] text-black font-semibold text-sm rounded-lg shadow-lg transition">
+                        Simpan Ustadz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL IKHTIBAR / UJIAN -->
+    <div id="ujianModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#1A1A1A] border border-[#333] rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl my-8">
+            <div class="bg-[#242424] px-6 py-4 border-b border-[#333] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Tambah Record Ujian / Ikhtibar</h3>
+                        <p id="ujianSantriName" class="text-xs text-gray-400">Santri: -</p>
+                    </div>
+                </div>
+                <button onclick="closeUjianModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#333] transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="ujianForm" onsubmit="handleUjianSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="ujianSantriId">
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Jenis Ujian / Ikhtibar *</label>
+                    <select id="inputJenisUjian" required class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        <option value="Ujian Pekanan">Ujian Pekanan</option>
+                        <option value="Ujian Online (CBT)">Ujian Online (CBT)</option>
+                        <option value="Ujian Mid-Semester">Ujian Mid-Semester</option>
+                        <option value="Ujian Akhir Semester">Ujian Akhir Semester</option>
+                        <option value="Ujian Akhir Kitab">Ujian Akhir Kitab</option>
+                        <option value="Ujian Sanad / Tahrir">Ujian Sanad / Tahrir</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Rentang Tanggal Pelaksanaan Ujian *</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <span class="text-[11px] text-gray-400 block mb-1">Tanggal Mulai</span>
+                            <input type="date" id="inputTanggalMulai" required
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                        <div>
+                            <span class="text-[11px] text-gray-400 block mb-1">Tanggal Selesai</span>
+                            <input type="date" id="inputTanggalSelesai" required
+                                class="w-full bg-[#242424] text-white text-sm rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-300 mb-1">Nilai Ujian (0-100) *</label>
+                        <input type="number" id="inputNilaiUjian" required min="0" max="100" placeholder="85" oninput="calculateUjianPredikat()"
+                            class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none font-bold">
+                    </div>
+                    <div class="md:col-span-2 bg-[#242424] p-3 rounded-lg border border-[#333] flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-gray-400 block">Predikat Ujian:</span>
+                            <span id="previewUjianPredikatText" class="text-sm font-bold text-[#FF9900]">Masukkan nilai...</span>
+                        </div>
+                        <span id="previewUjianPredikatArabic" class="text-xl font-arabic font-bold text-amber-400"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Penguji / Muqri' *</label>
+                    <input type="text" id="inputPenguji" required placeholder="Bapak Adi Kalingga"
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Materi / Batas Diuji *</label>
+                    <input type="text" id="inputMateriUjian" required placeholder="Contoh: Matan Al-Jazariyyah Bab 1-5"
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Status Sanad / Sertifikasi</label>
+                    <select id="inputStatusSanadUjian" class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                        <option value="Reguler">Ujian Reguler / Standard</option>
+                        <option value="Lulus Sanad">Bersambung Sanad (Lulus Mutashil)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">Catatan Khusus Ujian</label>
+                    <textarea id="inputCatatanUjian" rows="3" placeholder="Catatan kelancaran, kesalahan tajwid, atau rekomendasi..."
+                        class="w-full bg-[#242424] text-white text-sm rounded-lg px-3.5 py-2.5 border border-[#333] focus:border-[#FF9900] focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#262626]">
+                    <button type="button" onclick="closeUjianModal()" class="px-4 py-2.5 bg-[#262626] hover:bg-[#333] text-gray-300 text-sm font-medium rounded-lg transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-lg shadow-lg transition">
+                        Simpan Ujian
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL RIWAYAT CATATAN SANTRI -->
+    <div id="catatanModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-[#1A1A1A] border border-[#333] rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl my-8">
+            <div class="bg-[#242424] px-6 py-4 border-b border-[#333] flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-[#FF9900]/10 border border-[#FF9900]/30 flex items-center justify-center text-[#FF9900]">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Riwayat Evaluasi & Progress Santri</h3>
+                        <p id="catatanSantriName" class="text-xs text-gray-400">Santri: -</p>
+                    </div>
+                </div>
+                <button onclick="closeCatatanModal()" class="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#333] transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+                <div id="addCatatanSection" class="bg-[#222] border border-[#333] rounded-xl p-4 space-y-3">
+                    <h4 class="text-xs font-bold text-[#FF9900] uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus-circle text-[#FF9900]"></i> Tambah Record Evaluasi Baru
+                    </h4>
+                    <form id="catatanForm" onsubmit="handleCatatanSubmit(event)" class="space-y-3">
+                        <input type="hidden" id="catatanSantriId">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Tanggal Evaluasi *</label>
+                                <input type="date" id="inputCatatanTanggal" required
+                                    class="w-full bg-[#181818] text-white text-xs rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Pengajar / Ustadz *</label>
+                                <input type="text" id="inputCatatanUstadz" required placeholder="Bapak Adi Kalingga"
+                                    class="w-full bg-[#181818] text-white text-xs rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Pelajaran *</label>
+                                <input type="text" id="inputCatatanPelajaran" required placeholder="Tajwid / Nahwu"
+                                    class="w-full bg-[#181818] text-white text-xs rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Nama Kitab *</label>
+                                <input type="text" id="inputCatatanKitab" required placeholder="Matan Al-Jazariyyah"
+                                    class="w-full bg-[#181818] text-white text-xs rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Bab *</label>
+                                <input type="text" id="inputCatatanBab" required placeholder="Bab Makhraj Huruf"
+                                    class="w-full bg-[#181818] text-white text-xs rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Halaman / Capaian *</label>
+                                <input type="text" id="inputCatatanCapaian" required placeholder="Hal. 10-15 / Bait 20-30"
+                                    class="w-full bg-[#181818] text-white text-xs rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Nilai Evaluasi (0-100) *</label>
+                                <input type="number" id="inputCatatanNilai" required min="0" max="100" placeholder="90"
+                                    class="w-full bg-[#181818] text-white text-xs font-bold rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[11px] text-gray-400 mb-1">Isi Catatan / Evaluasi Detail *</label>
+                            <textarea id="inputCatatanText" rows="3" required placeholder="Tuliskan perkembangan bacaan, kelebihan, hafalan, atau catatan perbaikan..."
+                                class="w-full bg-[#181818] text-white text-xs rounded-lg px-3 py-2 border border-[#333] focus:border-[#FF9900] focus:outline-none leading-relaxed"></textarea>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-4 py-2 bg-[#FF9900] hover:bg-[#E68A00] text-black font-semibold text-xs rounded-lg shadow transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-paper-plane"></i> Simpan Evaluasi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-[#FF9900]"></i> Histori Rekam Evaluasi & Progress
+                    </h4>
+                    <div id="catatanHistoryList" class="space-y-3">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#242424] px-6 py-3 border-t border-[#333] flex justify-end">
+                <button onclick="closeCatatanModal()" class="px-4 py-2 bg-[#333] hover:bg-[#444] text-gray-200 text-xs font-medium rounded-lg transition">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Storage Keys
+        const STORAGE_KEY = 'ARRASMU_SANTRI_DATA_V3';
+        const STORAGE_KEY_USTADZ = 'ARRASMU_USTADZ_DATA_V3';
+        const STORAGE_KEY_LOGO = 'ARRASMU_LOGO_DATA_V3';
+        const STORAGE_KEY_PIN = 'ARRASMU_USTADZ_PIN_V3';
+        const STORAGE_KEY_QUIZ = 'ARRASMU_QUIZ_DATA_V3';
+
+        // Initial Data Ustadz
+        const initialUstadzData = [
+            {
+                id: 'ust-1',
+                nama: 'Bapak Adi Kalingga',
+                umur: 41,
+                domisili: 'Yogyakarta',
+                sertifikasi: "• Mudir Arrasmu Ilmiyyah Channel\n• Santri Aktif Ma'had Bimbingan Islam\n• Lulusan Takhoshshuh Nahwu Shorof Ust. Purwoko Abu Abdillah, S.Pd., B.A Hafizhahullah\n• Lulusan Ma'had Umar bin Khattab Yogyakarta\n• Pewaris Mutun Tajwid\n• Pewaris Sanad Qira'at 'Ashim Riwayat Hafsh"
+            }
+        ];
+
+        // Initial Data Santri
+        const initialSantriData = [
+            {
+                id: 'santri-1',
+                nama: 'Muhammad Ali Ridho',
+                umur: 16,
+                domisili: 'Surabaya, Jawa Timur',
+                pelajaran: 'Tajwid & Qira\'at',
+                kitab: 'Matan Al-Jazariyyah',
+                bab: 'Makharijul Huruf & Sifat',
+                halaman: 'Bait 10 - 25',
+                nilai: 92,
+                catatan: 'Makhraj huruf Shad dan Dhad sudah tepat. Tingkatkan konsistensi Mad Ja\'iz Munfasil.',
+                catatanHistory: [
+                    {
+                        id: 'cat-2',
+                        tanggal: '2026-09-20',
+                        ustadz: 'Bapak Adi Kalingga',
+                        pelajaran: 'Tajwid & Qira\'at',
+                        kitab: 'Matan Al-Jazariyyah',
+                        bab: 'Makharijul Huruf & Sifat',
+                        halaman: 'Bait 10 - 25',
+                        nilai: 92,
+                        text: 'Makhraj huruf Shad dan Dhad sudah tepat. Tingkatkan konsistensi Mad Ja\'iz Munfasil.'
+                    }
+                ],
+                ujian: []
+            }
+        ];
+
+        // Initial Sample Quizzes (CBT)
+        const initialQuizData = [
+            {
+                id: 'quiz-1',
+                title: 'Ikhtibar Pekanan Tajwid Dasar',
+                category: 'Tajwid',
+                author: 'Bapak Adi Kalingga',
+                duration: 10,
+                questions: [
+                    {
+                        q: 'Ada berapa huruf makhraj Al-Jauf (rongga mulut/tenggorokan)?',
+                        options: ['3 Huruf (Alif, Wau, Ya Mad)', '6 Huruf Halq', '4 Huruf Syafatain', '2 Huruf Khaysyum'],
+                        answer: 0
+                    },
+                    {
+                        q: 'Hukum Nun Mati atau Tanwin yang bertemu huruf "Baa" dinamakan?',
+                        options: ['Izhar Halqi', 'Iqlab', 'Idgham Bigunnah', 'Ikhfa Haqiqi'],
+                        answer: 1
+                    },
+                    {
+                        q: 'Pencipta / Penulis Matan Al-Jazariyyah dalam ilmu Tajwid adalah...',
+                        options: ['Imam Ash-Shatibi', 'Imam Ibnul Jazari', 'Imam Al-Jamzuri', 'Imam Nawawi'],
+                        answer: 1
+                    }
+                ]
+            }
+        ];
+
+        // Global States
+        let santriList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || initialSantriData;
+        let ustadzList = JSON.parse(localStorage.getItem(STORAGE_KEY_USTADZ)) || initialUstadzData;
+        let quizList = JSON.parse(localStorage.getItem(STORAGE_KEY_QUIZ)) || initialQuizData;
+        let isUstadzAuthenticated = false;
+        let currentMode = 'santri';
+        let activeTab = 'dashboard';
+
+        // Quiz Runner State
+        let currentRunningQuiz = null;
+        let quizTimerInterval = null;
+        let quizTimeRemaining = 0;
+
+        function getSavedPin() {
+            return localStorage.getItem(STORAGE_KEY_PIN) || '1234';
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            const viewDash = document.getElementById('viewDashboard');
+            const viewCbt = document.getElementById('viewCBT');
+            const tabDashBtn = document.getElementById('tabDashboard');
+            const tabCbtBtn = document.getElementById('tabCBT');
+
+            if (tab === 'dashboard') {
+                viewDash.classList.remove('hidden');
+                viewCbt.classList.add('hidden');
+                tabDashBtn.className = "px-3 py-1.5 rounded-lg bg-[#FF9900] text-black font-semibold transition flex items-center gap-1.5";
+                tabCbtBtn.className = "px-3 py-1.5 rounded-lg text-gray-400 hover:text-white font-semibold transition flex items-center gap-1.5";
+            } else {
+                viewDash.classList.add('hidden');
+                viewCbt.classList.remove('hidden');
+                tabCbtBtn.className = "px-3 py-1.5 rounded-lg bg-[#FF9900] text-black font-semibold transition flex items-center gap-1.5";
+                tabDashBtn.className = "px-3 py-1.5 rounded-lg text-gray-400 hover:text-white font-semibold transition flex items-center gap-1.5";
+                renderQuizList();
+            }
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const btnUstadz = document.getElementById('btnModeUstadz');
+            const btnSantri = document.getElementById('btnModeSantri');
+            const adminGroup = document.getElementById('adminActionGroup');
+            const banner = document.getElementById('santriModeBanner');
+            const cbtActions = document.getElementById('adminCbtActions');
+
+            if (mode === 'ustadz') {
+                btnUstadz.className = "px-3 py-1.5 rounded-lg bg-[#FF9900] text-black font-semibold transition flex items-center gap-1.5 shadow";
+                btnSantri.className = "px-3 py-1.5 rounded-lg text-gray-400 hover:text-white font-semibold transition flex items-center gap-1.5";
+                document.getElementById('iconLockState').className = "fa-solid fa-lock-open";
+                adminGroup.classList.remove('hidden');
+                adminGroup.classList.add('flex');
+                if (cbtActions) cbtActions.classList.remove('hidden');
+                banner.classList.add('hidden');
+            } else {
+                btnSantri.className = "px-3 py-1.5 rounded-lg bg-[#333] text-gray-200 font-semibold transition flex items-center gap-1.5";
+                btnUstadz.className = "px-3 py-1.5 rounded-lg text-gray-400 hover:text-white font-semibold transition flex items-center gap-1.5";
+                document.getElementById('iconLockState').className = "fa-solid fa-lock";
+                adminGroup.classList.add('hidden');
+                adminGroup.classList.remove('flex');
+                if (cbtActions) cbtActions.classList.add('hidden');
+                banner.classList.remove('hidden');
+            }
+
+            renderUstadzList();
+            renderSantriList();
+            renderQuizList();
+        }
+
+        /* --- CBT QUIZ MODULE --- */
+        function renderQuizList() {
+            const container = document.getElementById('quizListSection');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (quizList.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic col-span-full">Belum ada paket soal ujian online. Masuk Mode Ustadz untuk membuat soal baru.</p>`;
+                return;
+            }
+
+            const isUstadzMode = currentMode === 'ustadz';
+
+            quizList.forEach(q => {
+                const card = `
+                    <div class="bg-[#1E1E1E] border border-[#2A2A2A] hover:border-[#FF9900]/40 rounded-xl p-5 flex flex-col justify-between transition group shadow">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="px-2.5 py-0.5 rounded bg-[#FF9900]/10 text-[#FF9900] border border-[#FF9900]/20 text-[11px] font-semibold">
+                                    ${q.category}
+                                </span>
+                                <span class="text-[11px] text-gray-400 flex items-center gap-1">
+                                    <i class="fa-regular fa-clock text-amber-400"></i> ${q.duration} Menit
+                                </span>
+                            </div>
+
+                            <h3 class="text-base font-bold text-white group-hover:text-[#FF9900] transition mb-1">
+                                ${q.title}
+                            </h3>
+                            <p class="text-xs text-gray-400 mb-4">
+                                <i class="fa-solid fa-user-tie mr-1 text-[#FF9900]/80"></i> Penguji: ${q.author}
+                            </p>
+
+                            <div class="bg-[#141414] p-2.5 rounded-lg border border-[#262626] text-xs text-gray-300 flex items-center justify-between mb-4">
+                                <span><i class="fa-solid fa-list-check text-emerald-400 mr-1"></i> Jumlah Soal:</span>
+                                <strong class="text-white">${q.questions ? q.questions.length : 0} Pertanyaan</strong>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-[#262626] flex items-center justify-between gap-2">
+                            <button onclick="startQuizRunner('${q.id}')" class="px-4 py-2 bg-[#FF9900] hover:bg-[#E68A00] text-black font-bold text-xs rounded-lg transition flex-1 justify-center flex items-center gap-1.5">
+                                <i class="fa-solid fa-play"></i> Kerjakan Ujian
+                            </button>
+
+                            ${isUstadzMode ? `
+                                <button onclick="deleteQuiz('${q.id}')" class="px-2.5 py-2 bg-[#262626] hover:bg-rose-950/40 text-rose-400 border border-[#333] rounded-lg text-xs" title="Hapus Paket Soal">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        function startQuizRunner(quizId) {
+            const q = quizList.find(x => x.id === quizId);
+            if (!q) return;
+
+            currentRunningQuiz = q;
+            document.getElementById('quizListSection').classList.add('hidden');
+            document.getElementById('quizResultSection').classList.add('hidden');
+            document.getElementById('quizRunnerSection').classList.remove('hidden');
+
+            document.getElementById('runnerQuizCategory').innerText = q.category;
+            document.getElementById('runnerQuizTitle').innerText = q.title;
+
+            // Populate Santri Dropdown
+            const selectSantri = document.getElementById('runnerSantriSelect');
+            selectSantri.innerHTML = `<option value="">-- Pilih Nama Anda (Santri) --</option>`;
+            santriList.forEach(s => {
+                selectSantri.innerHTML += `<option value="${s.id}">${s.nama} (${s.domisili})</option>`;
+            });
+
+            // Render Questions
+            const qContainer = document.getElementById('quizQuestionsContainer');
+            qContainer.innerHTML = '';
+
+            q.questions.forEach((item, index) => {
+                const optionsHtml = item.options.map((opt, optIndex) => `
+                    <label class="flex items-center gap-3 p-3 bg-[#1A1A1A] hover:bg-[#262626] border border-[#2D2D2D] rounded-lg cursor-pointer transition text-xs text-gray-200">
+                        <input type="radio" name="question_${index}" value="${optIndex}" class="accent-[#FF9900]">
+                        <span>${opt}</span>
+                    </label>
+                `).join('');
+
+                const qBox = `
+                    <div class="bg-[#1E1E1E] p-4 rounded-xl border border-[#2D2D2D] space-y-3">
+                        <h4 class="text-sm font-semibold text-white">
+                            <span class="text-[#FF9900] font-bold mr-1">No. ${index + 1}</span> ${item.q}
+                        </h4>
+                        <div class="space-y-2">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+                qContainer.insertAdjacentHTML('beforeend', qBox);
+            });
+
+            // Timer Setup
+            quizTimeRemaining = (q.duration || 15) * 60;
+            updateTimerDisplay();
+            clearInterval(quizTimerInterval);
+            quizTimerInterval = setInterval(() => {
+                quizTimeRemaining--;
+                updateTimerDisplay();
+                if (quizTimeRemaining <= 0) {
+                    clearInterval(quizTimerInterval);
+                    alert('Waktu ujian telah habis! Jawaban Anda akan otomatis dikirim.');
+                    submitQuizAnswers();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(quizTimeRemaining / 60);
+            const secs = quizTimeRemaining % 60;
+            document.getElementById('quizTimerText').innerText = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function submitQuizAnswers() {
+            const santriId = document.getElementById('runnerSantriSelect').value;
+            if (!santriId) {
+                alert('Silakan pilih Nama Santri terlebih dahulu!');
+                return;
+            }
+
+            const santri = santriList.find(s => s.id === santriId);
+            if (!santri || !currentRunningQuiz) return;
+
+            clearInterval(quizTimerInterval);
+
+            let correctCount = 0;
+            const totalQuestions = currentRunningQuiz.questions.length;
+
+            currentRunningQuiz.questions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="question_${index}"]:checked`);
+                if (selected && parseInt(selected.value) === q.answer) {
+                    correctCount++;
+                }
+            });
+
+            const finalScore = Math.round((correctCount / totalQuestions) * 100);
+            const pred = getPredikatInfo(finalScore);
+
+            // Save to Santri Exam Record
+            const today = new Date().toISOString().split('T')[0];
+            const newExam = {
+                jenis: `CBT: ${currentRunningQuiz.title}`,
+                tanggalMulai: today,
+                tanggalSelesai: today,
+                penguji: currentRunningQuiz.author,
+                materi: currentRunningQuiz.category,
+                nilai: finalScore,
+                statusSanad: 'Reguler',
+                catatan: `Ujian Online CBT (${correctCount}/${totalQuestions} Benar). Predikat: ${pred.title}`
+            };
+
+            if (!santri.ujian) santri.ujian = [];
+            santri.ujian.push(newExam);
+            santri.nilai = finalScore;
+
+            saveSantriData();
+            renderSantriList();
+
+            // Display Result
+            document.getElementById('quizRunnerSection').classList.add('hidden');
+            document.getElementById('quizResultSection').classList.remove('hidden');
+
+            document.getElementById('resultSantriInfo').innerText = `Santri Peserta: ${santri.nama}`;
+            document.getElementById('resultScoreText').innerText = finalScore;
+            document.getElementById('resultPredikatText').innerText = `${pred.title} (${pred.arabic})`;
+        }
+
+        function finishQuizResult() {
+            document.getElementById('quizResultSection').classList.add('hidden');
+            document.getElementById('quizListSection').classList.remove('hidden');
+            renderQuizList();
+        }
+
+        function openCreateQuizModal() {
+            document.getElementById('questionsInputContainer').innerHTML = '';
+            document.getElementById('inputQuizTitle').value = '';
+            document.getElementById('inputQuizCategory').value = 'Tajwid';
+            document.getElementById('inputQuizAuthor').value = ustadzList.length > 0 ? ustadzList[0].nama : 'Ustadz';
+            document.getElementById('inputQuizDuration').value = '10';
+
+            // Add initial 2 question rows
+            addQuestionInputRow();
+            addQuestionInputRow();
+
+            document.getElementById('createQuizModal').classList.remove('hidden');
+        }
+
+        function closeCreateQuizModal() {
+            document.getElementById('createQuizModal').classList.add('hidden');
+        }
+
+        function addQuestionInputRow() {
+            const container = document.getElementById('questionsInputContainer');
+            const count = container.children.length + 1;
+
+            const row = `
+                <div class="bg-[#222] p-3.5 rounded-xl border border-[#333] space-y-2 relative">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-amber-400">Pertanyaan #${count}</span>
+                        <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-rose-400 hover:text-rose-300 text-xs">
+                            <i class="fa-solid fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                    <input type="text" class="q-text w-full bg-[#181818] text-white text-xs rounded px-3 py-2 border border-[#333]" placeholder="Tuliskan soal pertanyaan..." required>
+                    
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <input type="text" class="opt-0 bg-[#181818] text-white rounded px-2.5 py-1.5 border border-[#333]" placeholder="Pilihan A" required>
+                        <input type="text" class="opt-1 bg-[#181818] text-white rounded px-2.5 py-1.5 border border-[#333]" placeholder="Pilihan B" required>
+                        <input type="text" class="opt-2 bg-[#181818] text-white rounded px-2.5 py-1.5 border border-[#333]" placeholder="Pilihan C" required>
+                        <input type="text" class="opt-3 bg-[#181818] text-white rounded px-2.5 py-1.5 border border-[#333]" placeholder="Pilihan D" required>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1 text-xs text-gray-300">
+                        <span>Kunci Jawaban Benar:</span>
+                        <select class="ans-key bg-[#181818] text-amber-400 font-bold rounded px-2 py-1 border border-[#333]">
+                            <option value="0">Pilihan A</option>
+                            <option value="1">Pilihan B</option>
+                            <option value="2">Pilihan C</option>
+                            <option value="3">Pilihan D</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', row);
+        }
+
+        function handleCreateQuizSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('inputQuizTitle').value;
+            const category = document.getElementById('inputQuizCategory').value;
+            const author = document.getElementById('inputQuizAuthor').value;
+            const duration = parseInt(document.getElementById('inputQuizDuration').value) || 10;
+
+            const qRows = document.querySelectorAll('#questionsInputContainer > div');
+            const questions = [];
+
+            qRows.forEach(r => {
+                const qText = r.querySelector('.q-text').value;
+                const opt0 = r.querySelector('.opt-0').value;
+                const opt1 = r.querySelector('.opt-1').value;
+                const opt2 = r.querySelector('.opt-2').value;
+                const opt3 = r.querySelector('.opt-3').value;
+                const ansKey = parseInt(r.querySelector('.ans-key').value);
+
+                questions.push({
+                    q: qText,
+                    options: [opt0, opt1, opt2, opt3],
+                    answer: ansKey
+                });
+            });
+
+            if (questions.length === 0) {
+                alert('Tambahkan minimal 1 pertanyaan soal!');
+                return;
+            }
+
+            const newQuiz = {
+                id: 'quiz-' + Date.now(),
+                title, category, author, duration, questions
+            };
+
+            quizList.unshift(newQuiz);
+            localStorage.setItem(STORAGE_KEY_QUIZ, JSON.stringify(quizList));
+
+            renderQuizList();
+            closeCreateQuizModal();
+        }
+
+        function deleteQuiz(quizId) {
+            if (!confirm('Apakah Anda yakin ingin menghapus paket soal ujian online ini?')) return;
+            quizList = quizList.filter(q => q.id !== quizId);
+            localStorage.setItem(STORAGE_KEY_QUIZ, JSON.stringify(quizList));
+            renderQuizList();
+        }
+
+        /* --- DASHBOARD SANTRI CORE FUNCTIONS --- */
+        function renderSantriList() {
+            const container = document.getElementById('santriContainer');
+            const emptyState = document.getElementById('emptyState');
+            if (!container) return;
+
+            const searchValue = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+            const filterPelajaran = document.getElementById('filterPelajaran')?.value || 'ALL';
+            const filterPredikat = document.getElementById('filterPredikat')?.value || 'ALL';
+
+            const filtered = santriList.filter(s => {
+                const matchSearch = !searchValue || 
+                    (s.nama && s.nama.toLowerCase().includes(searchValue)) ||
+                    (s.kitab && s.kitab.toLowerCase().includes(searchValue)) ||
+                    (s.pelajaran && s.pelajaran.toLowerCase().includes(searchValue)) ||
+                    (s.domisili && s.domisili.toLowerCase().includes(searchValue));
+
+                const matchPelajaran = filterPelajaran === 'ALL' || 
+                    (s.pelajaran && s.pelajaran.toLowerCase().includes(filterPelajaran.toLowerCase()));
+
+                const predInfo = getPredikatInfo(s.nilai);
+                const matchPredikat = filterPredikat === 'ALL' || predInfo.title === filterPredikat;
+
+                return matchSearch && matchPelajaran && matchPredikat;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                if (emptyState) emptyState.classList.remove('hidden');
+                return;
+            } else {
+                if (emptyState) emptyState.classList.add('hidden');
+            }
+
+            const isUstadzMode = currentMode === 'ustadz';
+
+            container.innerHTML = filtered.map(s => {
+                const pred = getPredikatInfo(s.nilai);
+                const ujianCount = (s.ujian && s.ujian.length) || 0;
+                const lastUjian = ujianCount > 0 ? s.ujian[s.ujian.length - 1] : null;
+
+                return `
+                    <div class="bg-[#1A1A1A] border border-[#262626] hover:border-[#FF9900]/40 rounded-xl p-5 flex flex-col justify-between transition shadow-md group">
+                        <div>
+                            <div class="flex items-start justify-between gap-3 mb-3 pb-3 border-b border-[#262626]">
+                                <div>
+                                    <h3 class="text-base font-bold text-white group-hover:text-[#FF9900] transition flex items-center gap-2">
+                                        <i class="fa-solid fa-user-graduate text-[#FF9900] text-sm"></i>
+                                        ${s.nama}
+                                    </h3>
+                                    <p class="text-xs text-gray-400 mt-1 flex items-center gap-2">
+                                        <span><i class="fa-solid fa-hourglass-half text-[#FF9900]/70"></i> ${s.umur} Thn</span>
+                                        <span>•</span>
+                                        <span><i class="fa-solid fa-location-dot text-[#FF9900]/70"></i> ${s.domisili}</span>
+                                    </p>
+                                </div>
+                                <div class="text-right flex flex-col items-end">
+                                    <span class="px-2.5 py-1 rounded-lg border text-xs font-semibold flex items-center gap-1 ${pred.badgeClass}">
+                                        <span>${s.nilai} pts</span>
+                                        <span class="font-arabic font-bold text-sm">(${pred.arabic})</span>
+                                    </span>
+                                    <span class="text-[10px] text-gray-400 mt-1">${pred.title}</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2.5 text-xs mb-4">
+                                <div class="bg-[#222222] p-3 rounded-lg border border-[#2D2D2D]">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="text-[10px] uppercase font-bold text-[#FF9900] tracking-wider">
+                                            <i class="fa-solid fa-book-open mr-1"></i> Pelajaran & Kitab
+                                        </span>
+                                        <span class="text-[10px] text-gray-400 font-medium">${s.pelajaran}</span>
+                                    </div>
+                                    <p class="text-gray-200 font-semibold text-sm">${s.kitab}</p>
+                                    <div class="mt-2 text-gray-400 text-xs pt-2 border-t border-[#2A2A2A] flex justify-between">
+                                        <span><strong>Bab:</strong> ${s.bab}</span>
+                                        <span class="text-amber-400"><strong>Posisi:</strong> ${s.halaman}</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-[#161616] p-3 rounded-lg border border-[#262626]">
+                                    <span class="text-[10px] uppercase font-bold text-gray-400 block mb-1">
+                                        <i class="fa-solid fa-comment-dots text-[#FF9900] mr-1"></i> Evaluasi Terakhir:
+                                    </span>
+                                    <p class="text-xs text-gray-300 italic line-clamp-2">
+                                        "${s.catatan || 'Belum ada catatan evaluasi.'}"
+                                    </p>
+                                </div>
+
+                                ${ujianCount > 0 ? `
+                                    <div class="bg-blue-950/20 border border-blue-500/20 p-2.5 rounded-lg flex items-center justify-between text-xs text-blue-300">
+                                        <div class="flex items-center gap-1.5 truncate">
+                                            <i class="fa-solid fa-award text-blue-400"></i>
+                                            <span class="truncate"><strong>Ujian Terakhir:</strong> ${lastUjian.jenis} (${lastUjian.nilai} pts)</span>
+                                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-[#262626] flex items-center justify-between gap-2">
+                            <button onclick="openCatatanModal('${s.id}')" class="px-3 py-2 bg-[#242424] hover:bg-[#333] text-gray-200 hover:text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5 flex-1 justify-center border border-[#333]">
+                                <i class="fa-solid fa-clock-rotate-left text-[#FF9900]"></i>
+                                <span>Riwayat & Catatan</span>
+                            </button>
+
+                            ${isUstadzMode ? `
+                                <button onclick="openUjianModal('${s.id}')" class="px-2.5 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 rounded-lg text-xs font-semibold transition" title="+ Record Ujian">
+                                    <i class="fa-solid fa-file-pen"></i>
+                                </button>
+                                <button onclick="editSantri('${s.id}')" class="px-2.5 py-2 bg-[#242424] hover:bg-[#333] text-amber-400 border border-[#333] rounded-lg text-xs font-semibold transition" title="Edit Santri">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button onclick="deleteSantri('${s.id}')" class="px-2.5 py-2 bg-[#242424] hover:bg-rose-950/40 text-rose-400 border border-[#333] hover:border-rose-800/50 rounded-lg text-xs font-semibold transition" title="Hapus Santri">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            updateStats();
+        }
+
+        function renderUstadzList() {
+            const container = document.getElementById('ustadzContainer');
+            if (!container) return;
+
+            const isUstadzMode = currentMode === 'ustadz';
+
+            container.innerHTML = ustadzList.map(u => `
+                <div class="bg-[#222222] border border-[#2D2D2D] rounded-xl p-4 flex flex-col justify-between space-y-3">
+                    <div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-[#FF9900]/20 text-[#FF9900] border border-[#FF9900]/30 flex items-center justify-center font-bold text-sm">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-bold text-white">${u.nama}</h3>
+                                    <p class="text-[11px] text-gray-400">${u.umur} Thn • ${u.domisili}</p>
+                                </div>
+                            </div>
+                            ${isUstadzMode ? `
+                                <div class="flex items-center gap-1">
+                                    <button onclick="editUstadz('${u.id}')" class="text-amber-400 hover:text-amber-300 p-1 text-xs" title="Edit Ustadz">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button onclick="deleteUstadz('${u.id}')" class="text-rose-400 hover:text-rose-300 p-1 text-xs" title="Hapus Ustadz">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="mt-3 bg-[#181818] p-3 rounded-lg border border-[#262626] text-xs text-gray-300 whitespace-pre-line leading-relaxed font-sans">
+                            ${u.sertifikasi}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getPredikatInfo(score) {
+            score = Number(score) || 0;
+            if (score >= 90) return { title: 'Mumtaz', arabic: 'ممتاز', badgeClass: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' };
+            if (score >= 80) return { title: 'Jayyid Jiddan', arabic: 'جيد جدا', badgeClass: 'bg-blue-500/10 text-blue-400 border-blue-500/30' };
+            if (score >= 70) return { title: 'Jayyid', arabic: 'جيد', badgeClass: 'bg-amber-500/10 text-amber-400 border-amber-500/30' };
+            if (score >= 60) return { title: 'Maqbul', arabic: 'مقبول', badgeClass: 'bg-purple-500/10 text-purple-400 border-purple-500/30' };
+            return { title: 'Muroja\'ah', arabic: 'راسب', badgeClass: 'bg-rose-500/10 text-rose-400 border-rose-500/30' };
+        }
+
+        function calculatePredikat() {
+            const val = document.getElementById('inputNilai').value;
+            const pred = getPredikatInfo(val);
+            document.getElementById('previewPredikatText').innerText = pred.title;
+            document.getElementById('previewPredikatArabic').innerText = pred.arabic;
+        }
+
+        function calculateUjianPredikat() {
+            const val = document.getElementById('inputNilaiUjian').value;
+            const pred = getPredikatInfo(val);
+            document.getElementById('previewUjianPredikatText').innerText = pred.title;
+            document.getElementById('previewUjianPredikatArabic').innerText = pred.arabic;
+        }
+
+        function updateStats() {
+            const total = santriList.length;
+            const mumtaz = santriList.filter(s => (s.nilai || 0) >= 90).length;
+            
+            let totalExams = 0;
+            let sumNilai = 0;
+
+            santriList.forEach(s => {
+                sumNilai += Number(s.nilai) || 0;
+                totalExams += (s.ujian && s.ujian.length) || 0;
+            });
+
+            const avg = total > 0 ? Math.round(sumNilai / total) : 0;
+
+            document.getElementById('statTotalSantri').innerText = total;
+            document.getElementById('statMumtaz').innerText = mumtaz;
+            document.getElementById('statTotalUjian').innerText = totalExams;
+            document.getElementById('statRataRata').innerText = avg;
+        }
+
+        function saveSantriData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(santriList));
+        }
+
+        function saveUstadzData() {
+            localStorage.setItem(STORAGE_KEY_USTADZ, JSON.stringify(ustadzList));
+        }
+
+        /* --- AUTHENTICATION & MODALS --- */
+        function requestUstadzMode() {
+            if (isUstadzAuthenticated) {
+                switchMode('ustadz');
+            } else {
+                document.getElementById('inputLoginPin').value = '';
+                document.getElementById('loginErrorMessage').classList.add('hidden');
+                document.getElementById('loginModal').classList.remove('hidden');
+            }
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const pin = document.getElementById('inputLoginPin').value;
+            if (pin === getSavedPin()) {
+                isUstadzAuthenticated = true;
+                closeLoginModal();
+                switchMode('ustadz');
+            } else {
+                document.getElementById('loginErrorMessage').classList.remove('hidden');
+            }
+        }
+
+        function togglePinVisibility() {
+            const input = document.getElementById('inputLoginPin');
+            const icon = document.getElementById('eyePinIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye';
+            }
+        }
+
+        function openChangePinModal() {
+            document.getElementById('inputOldPin').value = '';
+            document.getElementById('inputNewPin').value = '';
+            document.getElementById('inputConfirmNewPin').value = '';
+            document.getElementById('changePinErrorMessage').classList.add('hidden');
+            document.getElementById('changePinModal').classList.remove('hidden');
+        }
+
+        function closeChangePinModal() {
+            document.getElementById('changePinModal').classList.add('hidden');
+        }
+
+        function handleChangePinSubmit(e) {
+            e.preventDefault();
+            const oldPin = document.getElementById('inputOldPin').value;
+            const newPin = document.getElementById('inputNewPin').value;
+            const confirmPin = document.getElementById('inputConfirmNewPin').value;
+            const errBox = document.getElementById('changePinErrorMessage');
+            const errText = document.getElementById('changePinErrorText');
+
+            if (oldPin !== getSavedPin()) {
+                errText.innerText = 'PIN Lama salah!';
+                errBox.classList.remove('hidden');
+                return;
+            }
+
+            if (newPin !== confirmPin) {
+                errText.innerText = 'Konfirmasi PIN Baru tidak cocok!';
+                errBox.classList.remove('hidden');
+                return;
+            }
+
+            localStorage.setItem(STORAGE_KEY_PIN, newPin);
+            alert('PIN Keamanan berhasil diperbarui!');
+            closeChangePinModal();
+        }
+
+        /* --- SANTRI MODAL & CRUD --- */
+        function openSantriModal() {
+            document.getElementById('santriForm').reset();
+            document.getElementById('santriId').value = '';
+            document.getElementById('modalTitle').innerText = 'Tambah Data Santri';
+            document.getElementById('previewPredikatText').innerText = 'Masukkan nilai...';
+            document.getElementById('previewPredikatArabic').innerText = '';
+            document.getElementById('santriModal').classList.remove('hidden');
+        }
+
+        function closeSantriModal() {
+            document.getElementById('santriModal').classList.add('hidden');
+        }
+
+        function handleSantriSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('santriId').value;
+            const nama = document.getElementById('inputNama').value;
+            const umur = document.getElementById('inputUmur').value;
+            const domisili = document.getElementById('inputDomisili').value;
+            const pelajaran = document.getElementById('inputPelajaran').value;
+            const kitab = document.getElementById('inputKitab').value;
+            const bab = document.getElementById('inputBab').value;
+            const halaman = document.getElementById('inputHalaman').value;
+            const nilai = Number(document.getElementById('inputNilai').value);
+            const catatan = document.getElementById('inputCatatan').value;
+
+            if (id) {
+                // Edit
+                const index = santriList.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    santriList[index] = {
+                        ...santriList[index],
+                        nama, umur, domisili, pelajaran, kitab, bab, halaman, nilai, catatan
+                    };
+                }
+            } else {
+                // Create
+                const newSantri = {
+                    id: 'santri-' + Date.now(),
+                    nama, umur, domisili, pelajaran, kitab, bab, halaman, nilai, catatan,
+                    catatanHistory: [
+                        {
+                            id: 'cat-' + Date.now(),
+                            tanggal: new Date().toISOString().split('T')[0],
+                            ustadz: ustadzList.length > 0 ? ustadzList[0].nama : 'Ustadz',
+                            pelajaran, kitab, bab, halaman, nilai, text: catatan
+                        }
+                    ],
+                    ujian: []
+                };
+                santriList.unshift(newSantri);
+            }
+
+            saveSantriData();
+            renderSantriList();
+            closeSantriModal();
+        }
+
+        function editSantri(id) {
+            const s = santriList.find(x => x.id === id);
+            if (!s) return;
+
+            document.getElementById('santriId').value = s.id;
+            document.getElementById('inputNama').value = s.nama;
+            document.getElementById('inputUmur').value = s.umur;
+            document.getElementById('inputDomisili').value = s.domisili;
+            document.getElementById('inputPelajaran').value = s.pelajaran;
+            document.getElementById('inputKitab').value = s.kitab;
+            document.getElementById('inputBab').value = s.bab;
+            document.getElementById('inputHalaman').value = s.halaman;
+            document.getElementById('inputNilai').value = s.nilai;
+            document.getElementById('inputCatatan').value = s.catatan || '';
+
+            calculatePredikat();
+            document.getElementById('modalTitle').innerText = 'Edit Data Santri';
+            document.getElementById('santriModal').classList.remove('hidden');
+        }
+
+        function deleteSantri(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus data santri ini?')) return;
+            santriList = santriList.filter(s => s.id !== id);
+            saveSantriData();
+            renderSantriList();
+        }
+
+        /* --- USTADZ MODAL & CRUD --- */
+        function openUstadzModal() {
+            document.getElementById('ustadzForm').reset();
+            document.getElementById('ustadzId').value = '';
+            document.getElementById('ustadzModalTitle').innerText = 'Tambah Profil Ustadz';
+            document.getElementById('ustadzModal').classList.remove('hidden');
+        }
+
+        function closeUstadzModal() {
+            document.getElementById('ustadzModal').classList.add('hidden');
+        }
+
+        function handleUstadzSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('ustadzId').value;
+            const nama = document.getElementById('inputNamaUstadz').value;
+            const umur = document.getElementById('inputUmurUstadz').value;
+            const domisili = document.getElementById('inputDomisiliUstadz').value;
+            const sertifikasi = document.getElementById('inputSertifikasiUstadz').value;
+
+            if (id) {
+                const idx = ustadzList.findIndex(u => u.id === id);
+                if (idx !== -1) {
+                    ustadzList[idx] = { id, nama, umur, domisili, sertifikasi };
+                }
+            } else {
+                const newU = {
+                    id: 'ust-' + Date.now(),
+                    nama, umur, domisili, sertifikasi
+                };
+                ustadzList.push(newU);
+            }
+
+            saveUstadzData();
+            renderUstadzList();
+            closeUstadzModal();
+        }
+
+        function editUstadz(id) {
+            const u = ustadzList.find(x => x.id === id);
+            if (!u) return;
+
+            document.getElementById('ustadzId').value = u.id;
+            document.getElementById('inputNamaUstadz').value = u.nama;
+            document.getElementById('inputUmurUstadz').value = u.umur;
+            document.getElementById('inputDomisiliUstadz').value = u.domisili;
+            document.getElementById('inputSertifikasiUstadz').value = u.sertifikasi;
+
+            document.getElementById('ustadzModalTitle').innerText = 'Edit Profil Ustadz';
+            document.getElementById('ustadzModal').classList.remove('hidden');
+        }
+
+        function deleteUstadz(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus profil ustadz ini?')) return;
+            ustadzList = ustadzList.filter(u => u.id !== id);
+            saveUstadzData();
+            renderUstadzList();
+        }
+
+        /* --- UJIAN MODAL --- */
+        function openUjianModal(santriId) {
+            const s = santriList.find(x => x.id === santriId);
+            if (!s) return;
+
+            document.getElementById('ujianForm').reset();
+            document.getElementById('ujianSantriId').value = s.id;
+            document.getElementById('ujianSantriName').innerText = `Santri: ${s.nama}`;
+            document.getElementById('inputPenguji').value = ustadzList.length > 0 ? ustadzList[0].nama : 'Ustadz';
+            document.getElementById('inputMateriUjian').value = `${s.kitab} (${s.bab})`;
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputTanggalMulai').value = today;
+            document.getElementById('inputTanggalSelesai').value = today;
+
+            document.getElementById('ujianModal').classList.remove('hidden');
+        }
+
+        function closeUjianModal() {
+            document.getElementById('ujianModal').classList.add('hidden');
+        }
+
+        function handleUjianSubmit(e) {
+            e.preventDefault();
+            const santriId = document.getElementById('ujianSantriId').value;
+            const s = santriList.find(x => x.id === santriId);
+            if (!s) return;
+
+            const newUjian = {
+                jenis: document.getElementById('inputJenisUjian').value,
+                tanggalMulai: document.getElementById('inputTanggalMulai').value,
+                tanggalSelesai: document.getElementById('inputTanggalSelesai').value,
+                nilai: Number(document.getElementById('inputNilaiUjian').value),
+                penguji: document.getElementById('inputPenguji').value,
+                materi: document.getElementById('inputMateriUjian').value,
+                statusSanad: document.getElementById('inputStatusSanadUjian').value,
+                catatan: document.getElementById('inputCatatanUjian').value
+            };
+
+            if (!s.ujian) s.ujian = [];
+            s.ujian.push(newUjian);
+            s.nilai = newUjian.nilai; // Update score
+
+            saveSantriData();
+            renderSantriList();
+            closeUjianModal();
+        }
+
+        /* --- CATATAN & HISTORY MODAL --- */
+        function openCatatanModal(santriId) {
+            const s = santriList.find(x => x.id === santriId);
+            if (!s) return;
+
+            document.getElementById('catatanSantriId').value = s.id;
+            document.getElementById('catatanSantriName').innerText = `Santri: ${s.nama} (${s.domisili})`;
+
+            // Configure Form Access based on mode
+            const addSection = document.getElementById('addCatatanSection');
+            if (currentMode === 'ustadz') {
+                addSection.classList.remove('hidden');
+                document.getElementById('inputCatatanTanggal').value = new Date().toISOString().split('T')[0];
+                document.getElementById('inputCatatanUstadz').value = ustadzList.length > 0 ? ustadzList[0].nama : 'Ustadz';
+                document.getElementById('inputCatatanPelajaran').value = s.pelajaran || '';
+                document.getElementById('inputCatatanKitab').value = s.kitab || '';
+                document.getElementById('inputCatatanBab').value = s.bab || '';
+                document.getElementById('inputCatatanCapaian').value = s.halaman || '';
+                document.getElementById('inputCatatanNilai').value = s.nilai || 0;
+                document.getElementById('inputCatatanText').value = '';
+            } else {
+                addSection.classList.add('hidden');
+            }
+
+            renderCatatanHistory(s);
+            document.getElementById('catatanModal').classList.remove('hidden');
+        }
+
+        function closeCatatanModal() {
+            document.getElementById('catatanModal').classList.add('hidden');
+        }
+
+        function renderCatatanHistory(santri) {
+            const container = document.getElementById('catatanHistoryList');
+            container.innerHTML = '';
+
+            const history = santri.catatanHistory || [];
+            const exams = santri.ujian || [];
+
+            if (history.length === 0 && exams.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-500 italic py-4 text-center">Belum ada riwayat rekam evaluasi atau ujian untuk santri ini.</p>`;
+                return;
+            }
+
+            // Render Exams first if any
+            exams.forEach(ex => {
+                const pred = getPredikatInfo(ex.nilai);
+                const exCard = `
+                    <div class="bg-blue-950/20 border border-blue-500/30 rounded-xl p-3.5 space-y-2 text-xs">
+                        <div class="flex items-center justify-between border-b border-blue-500/20 pb-2">
+                            <span class="font-bold text-blue-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-file-pen"></i> ${ex.jenis}
+                            </span>
+                            <span class="text-gray-400 text-[11px]"><i class="fa-regular fa-calendar-days mr-1"></i>${ex.tanggalMulai} s/d ${ex.tanggalSelesai}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-gray-300">
+                            <div><strong>Materi:</strong> ${ex.materi}</div>
+                            <div><strong>Penguji:</strong> ${ex.penguji}</div>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${pred.badgeClass}">
+                                Skor Ujian: ${ex.nilai} (${pred.title})
+                            </span>
+                            <span class="text-amber-400 font-semibold text-[11px]">${ex.statusSanad}</span>
+                        </div>
+                        ${ex.catatan ? `<p class="text-gray-400 italic bg-[#141414] p-2 rounded border border-[#222]">${ex.catatan}</p>` : ''}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', exCard);
+            });
+
+            // Render Evaluasi History
+            history.forEach(c => {
+                const pred = getPredikatInfo(c.nilai);
+                
+                // Fallback support for older data structures
+                const pel = c.pelajaran || (c.kitabInfo ? c.kitabInfo.split(' - ')[0] : '-');
+                const ktb = c.kitab || (c.kitabInfo ? c.kitabInfo.split(' - ')[1] || c.kitabInfo : '-');
+                const bb = c.bab || (c.capaian ? c.capaian.split(' (')[0] : '-');
+                const hlm = c.halaman || (c.capaian && c.capaian.includes('(') ? c.capaian.split('(')[1].replace(')', '') : c.capaian || '-');
+
+                const card = `
+                    <div class="bg-[#222] border border-[#333] rounded-xl p-4 space-y-3 text-xs">
+                        <!-- HEADER BARIS TANGGAL & PENGARU/USTADZ -->
+                        <div class="flex items-center justify-between border-b border-[#2D2D2D] pb-2 text-[11px]">
+                            <span class="text-gray-400 flex items-center gap-1">
+                                <i class="fa-regular fa-calendar-days text-[#FF9900]"></i>
+                                <strong>Tanggal:</strong> ${c.tanggal || '-'}
+                            </span>
+                            <span class="text-amber-400 font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-user-tie"></i>
+                                <strong>Pengajar:</strong> ${c.ustadz || '-'}
+                            </span>
+                        </div>
+
+                        <!-- DETAIL PELAJARAN, KITAB, BAB, HALAMAN -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#181818] p-2.5 rounded-lg border border-[#282828] text-gray-300 text-[11px]">
+                            <div>
+                                <span class="text-gray-500 block text-[10px] uppercase font-bold">Pelajaran</span>
+                                <strong class="text-white">${pel}</strong>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block text-[10px] uppercase font-bold">Kitab</span>
+                                <strong class="text-white">${ktb}</strong>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block text-[10px] uppercase font-bold">Bab</span>
+                                <strong class="text-white">${bb}</strong>
+                            </div>
+                            <div>
+                                <span class="text-gray-500 block text-[10px] uppercase font-bold">Halaman/Capaian</span>
+                                <strong class="text-amber-400">${hlm}</strong>
+                            </div>
+                        </div>
+
+                        <!-- NILAI & PREDIKAT EVALUASI -->
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-400 text-[11px] font-medium">Nilai Evaluasi:</span>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded text-xs font-bold ${pred.badgeClass}">
+                                    ${c.nilai} pts
+                                </span>
+                                <span class="text-xs font-bold text-gray-200">
+                                    ${pred.title} <span class="font-arabic text-amber-400">(${pred.arabic})</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- ISI CATATAN EVALUASI DETAIL -->
+                        <div>
+                            <span class="text-gray-400 block text-[10px] uppercase font-bold mb-1">Isi Catatan Evaluasi:</span>
+                            <p class="text-gray-200 leading-relaxed bg-[#181818] p-3 rounded-lg border border-[#262626] italic">
+                                "${c.text || '-'}"
+                            </p>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        function handleCatatanSubmit(e) {
+            e.preventDefault();
+            const santriId = document.getElementById('catatanSantriId').value;
+            const s = santriList.find(x => x.id === santriId);
+            if (!s) return;
+
+            const tanggal = document.getElementById('inputCatatanTanggal').value;
+            const ustadz = document.getElementById('inputCatatanUstadz').value;
+            const pelajaran = document.getElementById('inputCatatanPelajaran').value;
+            const kitab = document.getElementById('inputCatatanKitab').value;
+            const bab = document.getElementById('inputCatatanBab').value;
+            const halaman = document.getElementById('inputCatatanCapaian').value;
+            const nilai = Number(document.getElementById('inputCatatanNilai').value);
+            const text = document.getElementById('inputCatatanText').value;
+
+            const newCatatan = {
+                id: 'cat-' + Date.now(),
+                tanggal,
+                ustadz,
+                pelajaran,
+                kitab,
+                bab,
+                halaman,
+                nilai,
+                text
+            };
+
+            if (!s.catatanHistory) s.catatanHistory = [];
+            s.catatanHistory.unshift(newCatatan);
+            
+            // Sync with main santri record
+            s.pelajaran = pelajaran;
+            s.kitab = kitab;
+            s.bab = bab;
+            s.halaman = halaman;
+            s.nilai = nilai;
+            s.catatan = text;
+
+            saveSantriData();
+            renderSantriList();
+            renderCatatanHistory(s);
+
+            // Reset form
+            document.getElementById('inputCatatanText').value = '';
+            alert('Record evaluasi berhasil ditambahkan!');
+        }
+
+        /* --- LOGO UPLOAD HANDLERS --- */
+        function triggerLogoUpload() {
+            if (currentMode === 'ustadz') {
+                document.getElementById('logoFileInput').click();
+            } else {
+                alert('Silakan masuk Mode Ustadz terlebih dahulu untuk mengganti logo.');
+            }
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                localStorage.setItem(STORAGE_KEY_LOGO, dataUrl);
+                applyLogo(dataUrl);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function applyLogo(dataUrl) {
+            const img = document.getElementById('headerLogoImg');
+            const svg = document.getElementById('defaultLogoSvg');
+            if (dataUrl) {
+                img.src = dataUrl;
+                img.classList.remove('hidden');
+                svg.classList.add('hidden');
+            } else {
+                img.classList.add('hidden');
+                svg.classList.remove('hidden');
+            }
+        }
+
+        // INIT APPLICATION
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLogo = localStorage.getItem(STORAGE_KEY_LOGO);
+            if (savedLogo) applyLogo(savedLogo);
+
+            renderUstadzList();
+            renderSantriList();
+        });
+    </script>
+</body>
+</html>
